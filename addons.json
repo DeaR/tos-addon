@@ -1,0 +1,16 @@
+[
+	{
+		"name" : "Battle Mode",
+		"file" : "battlemode",
+		"extension" : "ipf",
+		"fileVersion" : "v0.0.4",
+		"releaseTag" : "battlemode",
+		"unicode" : "⛄",
+		"description" : "Fixed version of axjf's battlemode addon.",
+		"tags" : [
+			"mouse",
+			"battle",
+			"mode"
+		]
+	}
+]
