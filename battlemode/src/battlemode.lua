@@ -79,7 +79,7 @@ function CREATE_BATTLE_MODE_FRAME()
         bmToggleButton['button']:SetSkinName("quest_box");
 
         bmToggleButton['button']:ShowWindow(1)
-        bmToggleButton['button']:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm')");
+        bmToggleButton['button']:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE');
     end
     if battleModeStatus == 0 then
         bmToggleButton['button']:SetText("{@st41}{#ff0000}{s18}bm off")
@@ -168,7 +168,7 @@ function BATTLEMODE_CONFIG(configState)
 end
 
 function BATTLEMODE_CONFIG_UPDATE()
-    bmButton:SetEventScript(ui.RBUTTONUP, "ui.Chat('/bm config')")
+    bmButton:SetEventScript(ui.RBUTTONUP, '_BATTLEMODE_CONFIG')
     local curFrame = ui.GetFocusFrame()
     if curFrame ~= nil then
         if curFrameName ~= curFrame:GetName() and curFrame:GetName() ~= 'BATTLEMODE_CONTEXT' then
@@ -177,10 +177,16 @@ function BATTLEMODE_CONFIG_UPDATE()
             contextFrame:EnableHitTest(1)
             if settings.blacklist[curFrame:GetName()] == nil then
                 bmButton:SetText('{#009900}'..curFrame:GetName())
-                bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm blacklist "..curFrame:GetName().."')");
+                bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_BLACKLIST_'..curFrame:GetName());
+                loadstring('_BATTLEMODE_BLACKLIST_'..curFrame:GetName()..[[ = function()
+                    ui.Chat('/bm blacklist ]]..curFrame:GetName()..[[')
+                end]])()
             else
                 bmButton:SetText('{#ff0000}'..curFrame:GetName())
-                bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm whitelist "..curFrame:GetName().."')");
+                bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_WHITELIST_'..curFrame:GetName());
+                loadstring('_BATTLEMODE_WHITELIST_'..curFrame:GetName()..[[ = function()
+                    ui.Chat('/bm whitelist ]]..curFrame:GetName()..[[')
+                end]])()
             end
             contextFrame:Resize(bmButton:GetWidth(),contextFrame:GetHeight())
             curFrameName = curFrame:GetName()
@@ -196,10 +202,10 @@ function BATTLEMODE_CONFIG_UPDATE()
                 contextFrame:SetPos(quickSlot:GetX()+quickSlot:GetWidth()/2-contextFrame:GetWidth()/2,quickSlot:GetY()+quickSlot:GetHeight()/2-contextFrame:GetHeight()/2)
                 if settings.blacklist['quickslotnexpbar'] == nil then
                     bmButton:SetText('{#009900}quickslotnexpbar')
-                    bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm blacklist quickslotnexpbar')");
+                    bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_BLACKLIST_quickslotnexpbar');
                 else
                     bmButton:SetText('{#ff0000}quickslotnexpbar')
-                    bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm whitelist quickslotnexpbar')");
+                    bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_WHITELIST_quickslotnexpbar');
                 end
                 contextFrame:Resize(bmButton:GetWidth(),contextFrame:GetHeight())
             end
@@ -230,7 +236,10 @@ function TOGGLE_BATTLE_MODE(command)
         settings.blacklist[framename] = 1
         bmButton:SetText('{#ff0000}'..framename)
         CHAT_SYSTEM('Frame '..framename..' added to blacklist.')
-        bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm whitelist "..framename.."')");
+        bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_WHITELIST_'..framename);
+        loadstring('_BATTLEMODE_WHITELIST_'..framename..[[ = function()
+            ui.Chat('/bm whitelist ]]..framename..[[')
+        end]])()
         return BATTLEMODE_SAVESETTINGS()
     end
     if cmd == 'whitelist' then
@@ -240,7 +249,10 @@ function TOGGLE_BATTLE_MODE(command)
                 settings.blacklist[k] = nil
                 bmButton:SetText('{#009900}'..framename)
                 CHAT_SYSTEM('Frame '..framename..' removed from blacklist.')
-                bmButton:SetEventScript(ui.LBUTTONUP, "ui.Chat('/bm blacklist "..framename.."')");
+                bmButton:SetEventScript(ui.LBUTTONUP, '_BATTLEMODE_BLACKLIST_'..framename);
+                loadstring('_BATTLEMODE_BLACKLIST_'..framename..[[ = function()
+                    ui.Chat('/bm blacklist ]]..framename..[[')
+                end]])()
             end
         end
         return BATTLEMODE_SAVESETTINGS()
@@ -265,4 +277,20 @@ function TOGGLE_BATTLE_MODE(command)
         CHAT_SYSTEM('Battle mode on.')
         bmToggleButton['button']:SetText("{@st41}{#009900}{s18}bm on");
     end
+end
+
+function _BATTLEMODE()
+  ui.Chat('/bm')
+end
+
+function _BATTLEMODE_CONFIG()
+  ui.Chat('/bm config')
+end
+
+function _BATTLEMODE_BLACKLIST_quickslotnexpbar()
+  ui.Chat('/bm blacklist quickslotnexpbar')
+end
+
+function _BATTLEMODE_WHITELIST_quickslotnexpbar()
+  ui.Chat('/bm whitelist quickslotnexpbar')
 end
