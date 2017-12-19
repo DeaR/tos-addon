@@ -1,2 +1,15 @@
 [
+	{
+		"name" : "Auto-Zoom Minimap",
+		"file" : "autozoomminimap",
+		"extension" : "ipf",
+		"fileVersion" : "v1.0.0",
+		"releaseTag" : "autozoomminimap",
+		"unicode" : "💃",
+		"description" : "Add auto-zoom button and command.",
+		"tags" : [
+			"ui",
+			"map"
+		]
+	}
 ]
