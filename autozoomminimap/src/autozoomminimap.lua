@@ -107,11 +107,12 @@ function g.UPDATE_MINIMAP(frame, isFirst)
   g.hook['UPDATE_MINIMAP'](frame, isFirst);
 
   local cursize = GET_MINIMAPSIZE();
-  local zoominfo = frame:GetChild('ZOOM_INFO');
+  local outside_frame = ui.GetFrame("minimap_outsidebutton");
+  local zoominfo = outside_frame:GetChild('ZOOM_INFO');
   local percent = (100 + cursize) / 100;
   zoominfo:SetText(string.format('x{b}%1.2f', percent));
 
-  local azmm = frame:GetChild('AUTOZOOMMINIMAP');
+  local azmm = outside_frame:GetChild('AUTOZOOMMINIMAP');
   if g.settings.enable then
     azmm:SetText('{@st41}{#00FF00}A');
   else
@@ -120,22 +121,16 @@ function g.UPDATE_MINIMAP(frame, isFirst)
 end
 
 function AUTOZOOMMINIMAP_GAME_START()
-  local frame = ui.GetFrame('minimap');
-  local azmm;
-  if MAPMATE_ON_INIT ~= nil then
-    azmm = tolua.cast(frame:CreateOrGetControl('button', 'AUTOZOOMMINIMAP', 0, 0, 30, 24), 'ui::CButton');
-    azmm:SetGravity(ui.RIGHT, ui.BOTTOM);
-    azmm:SetMargin(0, 0, 2, 46);
-  else
-    azmm = tolua.cast(frame:CreateOrGetControl('button', 'AUTOZOOMMINIMAP', 0, 0, 30, 30), 'ui::CButton');
-    azmm:SetGravity(ui.LEFT, ui.BOTTOM);
-    azmm:SetMargin(55, 0, 0, 5);
-  end
+  local outside_frame = ui.GetFrame("minimap_outsidebutton");
+  local azmm = tolua.cast(outside_frame:CreateOrGetControl('button', 'AUTOZOOMMINIMAP', 0, 0, 30, 30), 'ui::CButton');
+  azmm:SetGravity(ui.LEFT, ui.BOTTOM);
+  azmm:SetMargin(245, 0, 0, 5);
   azmm:SetClickSound('button_click_big');
   azmm:SetOverSound('button_over');
   azmm:SetEventScript(ui.LBUTTONUP, 'AUTOZOOMMINIMAP_TOGGLE');
   azmm:ShowWindow(1);
 
+  local frame = ui.GetFrame("minimap");
   UPDATE_MINIMAP(frame);
   MINIMAP_CHAR_UDT(frame);
 end
